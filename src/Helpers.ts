@@ -62,7 +62,7 @@ export function IsBlocked(prev: IDoor, door: IDoor) {
     let dir = GetDirection(prev, door);
 
     if (!dir) {
-        console.log("dir not found", prev, door);
+        //console.log("dir not found", prev, door);
         return null;
 
     }

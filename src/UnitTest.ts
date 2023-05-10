@@ -35,10 +35,10 @@ Test(true, IsValidDoor(0, 1, "1000"));
 Test(false, IsValidDoor(1, 1, "1000"));
 Test(false, IsValidDoor(0, 2, "1000"));
 
-Test("1010", maze.rotate(2, "1010"));
-Test("1010", maze.rotate(2, "0101"));
-Test("0101", maze.rotate(1, "0101"));
-Test("0101", maze.rotate(1, "1010"));
+Test("1010", maze.rotate(2, "1010")[0]);
+Test("1010", maze.rotate(2, "0101")[0]);
+Test("0101", maze.rotate(1, "0101")[0]);
+Test("0101", maze.rotate(1, "1010")[0]);
 
 }
 

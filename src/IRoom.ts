@@ -5,9 +5,11 @@ export interface IRoomTemplate {
     title: string;
     count: number;
     isFinite: boolean;
+    color: string;
 }
 
 export interface IRoom extends IDirection {
     door: string;
-    title: string
+    title: string;
+    color: string;
 }
