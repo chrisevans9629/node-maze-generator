@@ -4,8 +4,7 @@
   "description": "",
   "private":true,
   "scripts": {
-    "build": "webpack",
-    "dev": "webpack"
+    "build": "start dist\\index.html && webpack"
   },
   "author": "",
   "license": "ISC",

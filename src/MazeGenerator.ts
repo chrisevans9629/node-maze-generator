@@ -1,5 +1,5 @@
 import { DoorCount, IsBlocked, IsValidDoor, mulberry32 } from "./Helpers";
-import { IRoom, IRoomTemplate } from "./IRoom";
+import { IRoom, IRoomTemplate } from "./Interfaces/IRoom";
 
 
 export class MazeGenerator {

@@ -1,5 +1,5 @@
-import { IDirection } from "./IDirection";
-import { IDoor } from "./IDoor";
+import { IDirection } from "./Interfaces/IDirection";
+import { IDoor } from "./Interfaces/IDoor";
 
 
 let left = [-1, 0];
