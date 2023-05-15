@@ -1,4 +1,5 @@
 import { DoorCount, IsBlocked, IsValidDoor, mulberry32 } from "./Helpers";
+import { IDirection } from "./Interfaces/IDirection";
 import { IRoom, IRoomTemplate } from "./Interfaces/IRoom";
 
 
@@ -35,8 +36,8 @@ export class MazeGenerator {
         }
     }
 
-    CreateRandom(x:number, y:number){
-        return mulberry32(x * 7 + y * 77 + this.seed);
+    CreateRandom(dir: IDirection){
+        return mulberry32(dir.x * 7 + dir.y * 77 + dir.z * 777 + this.seed);
     }
 
     GetRandom<Type>(rng:()=>number,data:Type[]): Type {
@@ -44,11 +45,11 @@ export class MazeGenerator {
         return data[ii];
     }
 
-    GetRoom(x: number, y: number): IRoomTemplate {
-        if (x == 0 && y == 0) {
+    GetRoom(dir: IDirection): IRoomTemplate {
+        if (dir.x == 0 && dir.y == 0 && dir.z == 0) {
             return { door: "1111", title: "Entrance Hall", isFinite:true, count:1, color: "white" };
         }
-        let rng = this.CreateRandom(x,y);
+        let rng = this.CreateRandom(dir);
 
         let room = this.GetRandom(rng, this.rooms);
         if(!room)
@@ -65,8 +66,8 @@ export class MazeGenerator {
         return { door: door, title: room.title, isFinite: room.isFinite, count: room.count, color: room.color };
     }
 
-    GetPrevious(x: number, y: number) {
-        let search = this.explored.filter(door => door.x == x && door.y == y);
+    GetPrevious(prevDir: IDirection) {
+        let search = this.explored.filter(door => door.x == prevDir.x && door.y == prevDir.y && prevDir.z == door.z);
         if (search.length > 0) {
             return search[0];
         }
@@ -87,27 +88,27 @@ export class MazeGenerator {
 
         return matchingDoors;
     }
-    CreateRoom(x: number, y: number, px: number, py: number): IRoom {
+    CreateRoom(newDir: IDirection, prevDir: IDirection): IRoom {
 
-        let lastCalc = this.GetPrevious(x, y);
+        let lastCalc = this.GetPrevious(newDir);
         if (lastCalc) {
             //console.log("skipped");
             return lastCalc;
         }
 
-        let room = this.GetRoom(x, y);
+        let room = this.GetRoom(newDir);
         if(!room){
             throw "no more rooms!";
         }
         let door = room.door;
         //console.log("new", room);
 
-        let pRoom = this.GetPrevious(px, py);
+        let pRoom = this.GetPrevious(prevDir);
         if (pRoom) {
 
             //console.log("prev", pRoom);
 
-            let blocked = IsBlocked(pRoom, { x: x, y: y, door: door });
+            let blocked = IsBlocked(pRoom, { x: newDir.x, y: newDir.y, z: newDir.z, door: door });
             //console.log('rotating...', blocked);
 
             if (blocked === -1) {
@@ -115,14 +116,14 @@ export class MazeGenerator {
             }
 
             if (blocked !== null && blocked >= 0) {
-                let rng = this.CreateRandom(x,y);
+                let rng = this.CreateRandom(newDir);
                 door = this.GetRandom(rng, this.rotate(blocked, door));
                 //console.log("rotated", room);
             }
 
         }
 
-        let roomFinal = { x: x, y: y, door: door, title: room.title, color: room.color };
+        let roomFinal = { x: newDir.x, y: newDir.y, z: newDir.z, door: door, title: room.title, color: room.color };
         this.explored.push(roomFinal);
         this.RemoveRoom(room.title);
         return roomFinal;

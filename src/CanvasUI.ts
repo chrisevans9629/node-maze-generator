@@ -1,3 +1,4 @@
+import { IDirection } from "./Interfaces/IDirection";
 import { MazeGenerator } from "./MazeGenerator";
 
 
@@ -141,12 +142,12 @@ export class MazeCanvasRenderer {
     
     }
 
-    Draw(maze: MazeGenerator, x: number, y: number) {
-        this.Translate(x, y);
-        maze.explored.forEach(e => {
+    Draw(maze: MazeGenerator, dir: IDirection) {
+        this.Translate(dir.x, dir.y);
+        maze.explored.filter(e => e.z == dir.z).forEach(e => {
             this.DrawCell(e.x, e.y, e.door, e.color);
         });
-        this.DrawDot(x, y, "red");
+        this.DrawDot(dir.x, dir.y, "red");
     }
 }
 

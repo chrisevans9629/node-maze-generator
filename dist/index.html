@@ -1,56 +1,67 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Getting Started</title>
-    <style>
-body{
-  background: black;
-}
 
-#up, #down {
-  width: 100px;
-  margin-left: 50px;
-}
+<head>
+  <meta charset="utf-8" />
+  <title>Getting Started</title>
+  <style>
+    body {
+      background: black;
+    }
 
-#left, #right {
-  width: 100px;
-  padding: 0px;
-  margin: 0px;
-}
+    #foreward,
+    #backward {
+      width: 100px;
+      
+    }
 
-#canvas {
-  background: grey;
-}
+    #backward {
+      margin-left: 50px;
+    }
 
-#header {
-    color: white;
-}
-    </style>
-  </head>
-  <body>
+    #left,
+    #right {
+      width: 100px;
+      padding: 0px;
+      margin: 0px;
+    }
 
-    <div>
-        <h2 id="header"></h2>
-        <canvas id="canvas" />
-        
-        </div>
-        
-        <div>
-        <button id="up">Up</button>
-        </div>
-        <div>
-        <button id="left">Left</button>
-        <button id="right">
-        Right
-        </button>
-        </div>
-        <div>
-        <button id="down">
-        Down
-        </button>
-        </div>
+    #up, #down {
+      width: 50px;
+    }
 
-   <script src="bundle.js"></script>
-  </body>
+    #canvas {
+      background: grey;
+    }
+
+    #header {
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div>
+    <h2 id="header"></h2>
+    <canvas id="canvas" />
+
+  </div>
+
+  <div>
+    <button id="up">Up</button>
+    <button id="foreward">Foreward</button>
+    <button id="down">Down</button>
+  </div>
+  <div>
+    <button id="left">Left</button>
+    <button id="right">Right</button>
+  </div>
+  <div>
+    <button id="backward">Backward</button>
+  </div>
+
+  <script src="bundle.js"></script>
+</body>
+
 </html>

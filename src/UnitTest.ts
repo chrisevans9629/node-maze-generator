@@ -10,20 +10,23 @@ function Test(expected: any, actual: any) {
 export function RunTests() {
     //Unit Tests
 console.log("Unit Tests")
-Test("right", GetDirection({ x: 0, y: 0 }, { x: 1, y: 0 }).name)
-Test("left", GetDirection({ x: 0, y: 0 }, { x: -1, y: 0 }).name)
-Test("up", GetDirection({ x: 0, y: 0 }, { x: 0, y: -1 }).name)
-Test("down", GetDirection({ x: 0, y: 0 }, { x: 0, y: 1 }).name)
-Test(null, GetDirection({ x: 0, y: 0 }, { x: 1, y: 1 }))
-Test(null, GetDirection(null, { x: 0, y: 0 }))
-Test(null, GetDirection({ x: 0, y: 0 }, null))
+
+let zero = {x: 0, y: 0, z: 0};
+
+Test("right", GetDirection(zero, { x: 1, y: 0, z:0 }).name)
+Test("left", GetDirection(zero, { x: -1, y: 0, z:0 }).name)
+Test("foreward", GetDirection(zero, { x: 0, y: -1, z:0 }).name)
+Test("backward", GetDirection(zero, { x: 0, y: 1, z:0 }).name)
+Test(null, GetDirection(zero, { x: 1, y: 1, z:0 }))
+Test(null, GetDirection(null, zero))
+Test(null, GetDirection(zero, null))
 Test(null, GetDirection(null, null))
 
-Test(null, IsBlocked({ x: 0, y: 0, door: "1111" }, { x: 1, y: 0, door: "1111" }))
-Test(0, IsBlocked({ x: 0, y: 0, door: "1111" }, { x: 1, y: 0, door: "0111" }))
-Test(-1, IsBlocked({ x: 0, y: 0, door: "1101" }, { x: 1, y: 0, door: "1111" }))
-Test(null, IsBlocked(null, { x: 1, y: 0, door: "1111" }))
-Test(null, IsBlocked({ x: 0, y: 0, door: "1111" }, null))
+Test(null, IsBlocked({ x: 0, y: 0, z:0, door: "1111" }, { x: 1, z:0, y: 0, door: "1111" }))
+Test(0, IsBlocked({ x: 0, y: 0, z:0, door: "1111" }, { x: 1, y: 0, z:0, door: "0111" }))
+Test(-1, IsBlocked({ x: 0, y: 0, z:0, door: "1101" }, { x: 1, y: 0, z:0, door: "1111" }))
+Test(null, IsBlocked(null, { x: 1, z:0, y: 0, door: "1111" }))
+Test(null, IsBlocked({ x: 0, y: 0, z:0, door: "1111" }, null))
 
 
 let maze = new MazeGenerator(1,[]);

@@ -14,8 +14,8 @@ let downDoor = [1, 3];
 
 let leftCheck = { delta: left, comp: leftDoor, name: "left" };
 let rightCheck = { delta: right, comp: rightDoor, name: "right" };
-let upCheck = { delta: up, comp: upDoor, name: "up" };
-let downCheck = { delta: down, comp: downDoor, name: "down" };
+let upCheck = { delta: up, comp: upDoor, name: "foreward" };
+let downCheck = { delta: down, comp: downDoor, name: "backward" };
 
 export let dirChecks = [leftCheck, rightCheck, upCheck, downCheck];
 
