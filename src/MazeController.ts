@@ -25,24 +25,28 @@ export class MazeController {
         let forewardBtn = document.getElementById("foreward") as HTMLButtonElement;
         let backBtn = document.getElementById("backward") as HTMLButtonElement;
         let upBtn = document.getElementById("up") as HTMLButtonElement;
-
+        let downBtn = document.getElementById("down") as HTMLButtonElement;
 
 
         let header = document.getElementById("header");
         document.addEventListener("keydown", function (event) {
             let delta = {x: control.position.x, y: control.position.y, z: control.position.z};
-
-            if (event.keyCode === 37 && !leftBtn.disabled) {
+            console.log(event.keyCode);
+            if (event.keyCode === 100 && !leftBtn.disabled) {
                 delta.x--;
-            } else if (event.keyCode === 38 && !forewardBtn.disabled) {
+            } else if (event.keyCode === 104 && !forewardBtn.disabled) {
                 delta.y--;
-            } else if (event.keyCode === 39 && !rightBtn.disabled) {
+            } else if (event.keyCode === 102 && !rightBtn.disabled) {
                 delta.x++;
-            } else if (event.keyCode === 40 && !backBtn.disabled) {
+            } else if (event.keyCode === 101 && !backBtn.disabled) {
                 delta.y++;
+            } else if (event.keyCode === 103 && !upBtn.disabled){
+                delta.z++;
+            } else if (event.keyCode === 97 && !downBtn.disabled){
+                delta.z--;
             }
 
-            if (delta.x == control.position.x && delta.y == control.position.y) {
+            if (delta.x == control.position.x && delta.y == control.position.y && delta.z == control.position.z) {
                 return;
             }
 
@@ -52,7 +56,7 @@ export class MazeController {
             control.position.y = delta.y;
             control.position.z = delta.z;
             control.ui.Draw(control.maze, control.position);
-            header.textContent = pd.title;
+            header.textContent = `Floor ${pd.z} ${pd.title}`;
         });
 
     }
@@ -63,10 +67,11 @@ export class MazeController {
 
             let cx = dir.x + d.delta[0];
             let cy = dir.y + d.delta[1];
+            let cz = dir.z + d.delta[2];
 
-            let cPos = {x: cx, y: cy, z: dir.z};
+            let cPos = {x: cx, y: cy, z: cz};
 
-            let ch = this.maze.GetPrevious(cPos);
+            let ch = this.maze.GetExplored(cPos);
 
             if (!ch) {
                 ch = { x: cx, y: cy, door: "1111", title: "default", color: "white", z: cPos.z };

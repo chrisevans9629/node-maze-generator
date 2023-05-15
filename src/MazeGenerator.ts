@@ -4,8 +4,8 @@ import { IRoom, IRoomTemplate } from "./Interfaces/IRoom";
 
 
 export class MazeGenerator {
-    seed: number;
-    matrix: string[][];
+    private seed: number;
+    private matrix: string[][];
     explored: IRoom[];
     rooms: IRoomTemplate[];
     constructor(seed: number, rooms: IRoomTemplate[]) {
@@ -66,7 +66,7 @@ export class MazeGenerator {
         return { door: door, title: room.title, isFinite: room.isFinite, count: room.count, color: room.color };
     }
 
-    GetPrevious(prevDir: IDirection) {
+    GetExplored(prevDir: IDirection) {
         let search = this.explored.filter(door => door.x == prevDir.x && door.y == prevDir.y && prevDir.z == door.z);
         if (search.length > 0) {
             return search[0];
@@ -98,9 +98,16 @@ export class MazeGenerator {
     }
     CreateRoom(newDir: IDirection, prevDir: IDirection): IRoom {
 
-        let lastCalc = this.GetPrevious(newDir);
+        let lastCalc = this.GetExplored(newDir);
+        let pRoom = this.GetExplored(prevDir);
+
         if (lastCalc) {
-            //console.log("skipped");
+            if(pRoom){
+                let blocked = this.CheckBlocked(pRoom, newDir, lastCalc.door);
+                if(blocked !== null){
+                    throw "invalid move";
+                }
+            }
             return lastCalc;
         }
 
@@ -109,31 +116,29 @@ export class MazeGenerator {
             throw "no more rooms!";
         }
         let door = room.door;
-        //console.log("new", room);
 
-        let pRoom = this.GetPrevious(prevDir);
         if (pRoom) {
 
-            //console.log("prev", pRoom);
-
-            let blocked = IsBlocked(pRoom, { x: newDir.x, y: newDir.y, z: newDir.z, door: door });
-            //console.log('rotating...', blocked);
-
-            if (blocked === -1) {
-                throw "invalid move";
-            }
+            let blocked = this.CheckBlocked(pRoom, newDir, door);
 
             if (blocked !== null && blocked >= 0) {
                 let rng = this.CreateRandom(newDir);
                 door = this.GetRandom(rng, this.rotate(blocked, door));
-                //console.log("rotated", room);
             }
-
         }
 
         let roomFinal = { x: newDir.x, y: newDir.y, z: newDir.z, door: door, title: room.title, color: room.color };
         this.explored.push(roomFinal);
         this.RemoveRoom(room.title);
         return roomFinal;
+    }
+
+    private CheckBlocked(pRoom: IRoom, newDir: IDirection, door: string) {
+        let blocked = IsBlocked(pRoom, { x: newDir.x, y: newDir.y, z: newDir.z, door: door });
+
+        if (blocked === -1) {
+            throw "invalid move";
+        }
+        return blocked;
     }
 }

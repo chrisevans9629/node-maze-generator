@@ -70,6 +70,13 @@ export function GetDirection(prev: IDirection, door: IDirection) {
 //Then, we check the doors that match that direction.
 //If the doors do not match, then it's blocked, so we need to rotate the room.
 export function IsBlocked(prev: IDoor, door: IDoor) {
+    if(prev && prev.door.length === 4){
+        prev.door += "00";
+    }
+    if(door && door.door.length === 4){
+        door.door += "00";
+    }
+
     let dir = GetDirection(prev, door);
 
     if (!dir) {

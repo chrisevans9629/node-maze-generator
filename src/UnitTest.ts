@@ -1,11 +1,12 @@
 import { DoorCount, GetDirection, IsBlocked, IsValidDoor } from "./Helpers";
 import { IDirection } from "./Interfaces/IDirection";
+import { IRoom } from "./Interfaces/IRoom";
 import { MazeGenerator } from "./MazeGenerator";
 import { rm } from "./Rooms";
 
-function Test<T>(expected: T, actual: T) {
+function Test<T>(expected: T, actual: T, becauseOf?: string) {
     if (expected !== actual) {
-        console.log(`expected '${expected}' but returned '${actual}'`);
+        console.log(`expected '${expected}' but returned '${actual}' because of ${becauseOf}`);
     }
 }
 let zero = { x: 0, y: 0, z: 0 };
@@ -41,6 +42,8 @@ export function RunTests() {
     Test(5, IsBlocked({x: 0, y:0, z:0, door: "111110"}, {x:0, y:0, z:1, door: "111100"}));
     Test(4, IsBlocked({x: 0, y:0, z:0, door: "111101"}, {x:0, y:0, z:-1, door: "111100"}));
 
+    Test(5, IsBlocked({x:0, y:0, z:0, door: "111110"}, {x:0, y:0, z:1, door: "1111"}), "traveling from stairs to main would require a rotation");
+    Test(-1, IsBlocked({x:0, y:0, z:0, door: "1111"}, {x:0, y:0, z:1, door: "111111"}), "main to stairs should fail");
 
     Test(1, DoorCount("1000"));
     Test(2, DoorCount("1010"));
@@ -53,7 +56,8 @@ export function RunTests() {
 
     MazeZRotationTest();
 
-
+    MazeUpDownTest();
+    MazeUpDownTest1();
 }
 
 function MazeZRotationTest() {
@@ -90,4 +94,46 @@ function MazeZTest() {
 }
 
 
+function rt(x,y,z,door): { x: number; y: number; z: number; door: string; title: string; color: string; count: number; isFinite: boolean; } {
+    return {x: x, y: y, z: z, door: door, title: "", color: "", count: 1, isFinite: true};
+}
+function pos(x,y,z): IDirection {
+    return {x:x,y:y,z:z};
+}
 
+function Try<T,E>(expected: E,func: () => T, becauseOf?: string){
+    let err = null;
+    try {
+        func();
+    } catch (error) {
+        err = error;
+    }
+    Test(expected, err, becauseOf);
+}
+
+function MazeUpDownTest() {
+    let maze = new MazeGenerator(1, []);
+
+    let main = rt(1,0,1, "1111");
+    let landing = rt(1,0,0, "111110");
+
+    maze.explored.push(main);
+    maze.explored.push(landing);
+
+    Try("invalid move", () => maze.CreateRoom(main, landing), "moving from landing to main");
+    Try("invalid move", () => maze.CreateRoom(landing, main), "moving from main to landing");
+}
+
+function MazeUpDownTest1() {
+    let maze = new MazeGenerator(1, []);
+
+    let main = rt(1,0,1, "1111");
+    let landing = rt(1,0,0, "111110");
+
+    maze.rooms.push(main);
+    maze.explored.push(main);
+    maze.explored.push(landing);
+
+    Try("invalid move", () => maze.CreateRoom(main, landing), "moving from landing to main");
+    Try("invalid move", () => maze.CreateRoom(landing, main), "moving from main to landing");
+}

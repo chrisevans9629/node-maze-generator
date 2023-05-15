@@ -11,7 +11,15 @@ export function rm(name: string, door: string, finite?: boolean, count?: number)
         count = 1;
     if (finite === undefined)
         finite = true;
-    return { door: door, title: name, isFinite: finite, count: count, color: finite ? special : normal };
+
+    let color = normal;
+
+    if(finite)
+        color = special;
+    if(door.length > 4)
+        color = "#ff8800";
+
+    return { door: door, title: name, isFinite: finite, count: count, color: color };
 }
 
 export let rooms = [
@@ -22,5 +30,7 @@ export let rooms = [
     rm("Graveyard", "0111"),
     rm("Corner Hallway", "1100", false),
     rm("Hallway", "1010", false),
-    rm("Fourway", "1111", false)
+    rm("Fourway", "1111", false),
+    rm("stairwell", "111110", false),
+    rm("upper landing", "111101", false)
 ];
