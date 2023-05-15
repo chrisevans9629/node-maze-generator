@@ -2,22 +2,30 @@ import { IDirection } from "./Interfaces/IDirection";
 import { IDoor } from "./Interfaces/IDoor";
 
 
-let left = [-1, 0];
-let right = [1, 0];
-let up = [0, -1];
-let down = [0, 1];
+let left = [-1, 0, 0];
+let right = [1, 0, 0];
+let foreward = [0, -1, 0];
+let backward = [0, 1, 0];
+let up = [0,0,1];
+let down = [0,0,-1];
+
 
 let leftDoor = [2, 0];
 let rightDoor = [0, 2];
-let upDoor = [3, 1];
-let downDoor = [1, 3];
+let foreDoor = [3, 1];
+let backDoor = [1, 3];
+
+let upDoor = [5, 4];
+let downDoor = [4, 5];
 
 let leftCheck = { delta: left, comp: leftDoor, name: "left" };
 let rightCheck = { delta: right, comp: rightDoor, name: "right" };
-let upCheck = { delta: up, comp: upDoor, name: "foreward" };
-let downCheck = { delta: down, comp: downDoor, name: "backward" };
+let foreCheck = { delta: foreward, comp: foreDoor, name: "foreward" };
+let backCheck = { delta: backward, comp: backDoor, name: "backward" };
+let upCheck = {delta: up, comp: upDoor, name: "up"};
+let downCheck = {delta: down, comp: downDoor, name: "down"};
 
-export let dirChecks = [leftCheck, rightCheck, upCheck, downCheck];
+export let dirChecks = [leftCheck, rightCheck, foreCheck, backCheck, upCheck, downCheck];
 
 
 export function mulberry32(a: number) {
@@ -48,7 +56,10 @@ export function GetDirection(prev: IDirection, door: IDirection) {
     for (let i = 0; i < dirChecks.length; i++) {
         let dir = dirChecks[i];
 
-        if (door && prev && door.x - prev.x == dir.delta[0] && door.y - prev.y == dir.delta[1]) {
+        if (door && prev 
+            && door.x - prev.x == dir.delta[0] 
+            && door.y - prev.y == dir.delta[1]
+            && door.z - prev.z == dir.delta[2]) {
             return dir;
         }
     }
@@ -62,15 +73,13 @@ export function IsBlocked(prev: IDoor, door: IDoor) {
     let dir = GetDirection(prev, door);
 
     if (!dir) {
-        //console.log("dir not found", prev, door);
         return null;
-
     }
 
     let di = dir.comp[0];
     let pdi = dir.comp[1];
 
-    if (prev.door[pdi] === "0") {
+    if (prev.door[pdi] === undefined || prev.door[pdi] === "0") {
         return -1;
     }
 

@@ -74,9 +74,16 @@ export class MazeGenerator {
         return null;
     }
     rotate(doorIndex: number, door1: string): string[] {
+
+        let upDown = "";
+        if(door1.length > 4){
+            upDown = door1[4] + door1[5];
+            door1 = door1.substring(0,4);
+        }
+        //remove the up/down doors since they can't be rotated... that wouldn't make sense.
         let doorCount = DoorCount(door1);
 
-        let matchingDoors = [];
+        let matchingDoors: string[] = [];
 
         for (let index = 0; index < this.matrix.length; index++) {
             const m = this.matrix[index];
@@ -86,7 +93,8 @@ export class MazeGenerator {
             }
         }
 
-        return matchingDoors;
+        //add the up/down doors back.
+        return matchingDoors.map(m => m + upDown);
     }
     CreateRoom(newDir: IDirection, prevDir: IDirection): IRoom {
 
