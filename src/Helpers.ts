@@ -6,8 +6,8 @@ let left = [-1, 0, 0];
 let right = [1, 0, 0];
 let foreward = [0, -1, 0];
 let backward = [0, 1, 0];
-let up = [0,0,1];
-let down = [0,0,-1];
+let up = [0, 0, 1];
+let down = [0, 0, -1];
 
 
 let leftDoor = [2, 0];
@@ -18,15 +18,29 @@ let backDoor = [1, 3];
 let upDoor = [5, 4];
 let downDoor = [4, 5];
 
-let leftCheck = { delta: left, comp: leftDoor, name: "left" };
-let rightCheck = { delta: right, comp: rightDoor, name: "right" };
-let foreCheck = { delta: foreward, comp: foreDoor, name: "foreward" };
-let backCheck = { delta: backward, comp: backDoor, name: "backward" };
-let upCheck = {delta: up, comp: upDoor, name: "up"};
-let downCheck = {delta: down, comp: downDoor, name: "down"};
+export enum DirectionName {
+    Left = "left",
+    Right = "right",
+    Foreward = "foreward",
+    Backward = "backward",
+    Up = "up",
+    Down = "down"
+}
 
-export let dirChecks = [leftCheck, rightCheck, foreCheck, backCheck, upCheck, downCheck];
+export interface IDirectionTransform {
+    delta: number[];
+    comp: number[];
+    name: DirectionName;
+}
 
+let leftCheck = { delta: left, comp: leftDoor, name: DirectionName.Left };
+let rightCheck = { delta: right, comp: rightDoor, name: DirectionName.Right };
+let foreCheck = { delta: foreward, comp: foreDoor, name: DirectionName.Foreward };
+let backCheck = { delta: backward, comp: backDoor, name: DirectionName.Backward };
+let upCheck = { delta: up, comp: upDoor, name: DirectionName.Up };
+let downCheck = { delta: down, comp: downDoor, name: DirectionName.Down };
+
+export let dirChecks: IDirectionTransform[] = [leftCheck, rightCheck, foreCheck, backCheck, upCheck, downCheck];
 
 export function mulberry32(a: number) {
     return function () {
@@ -52,12 +66,15 @@ export function IsValidDoor(doorIndex: number, doorCount: number, door: string) 
     return door.charAt(doorIndex) === "1" && doorCount == DoorCount(door);
 }
 
-export function GetDirection(prev: IDirection, door: IDirection) {
+
+
+
+export function GetDirection(prev: IDirection, door: IDirection): IDirectionTransform {
     for (let i = 0; i < dirChecks.length; i++) {
         let dir = dirChecks[i];
 
-        if (door && prev 
-            && door.x - prev.x == dir.delta[0] 
+        if (door && prev
+            && door.x - prev.x == dir.delta[0]
             && door.y - prev.y == dir.delta[1]
             && door.z - prev.z == dir.delta[2]) {
             return dir;
@@ -70,10 +87,10 @@ export function GetDirection(prev: IDirection, door: IDirection) {
 //Then, we check the doors that match that direction.
 //If the doors do not match, then it's blocked, so we need to rotate the room.
 export function IsBlocked(prev: IDoor, door: IDoor) {
-    if(prev && prev.door.length === 4){
+    if (prev && prev.door.length === 4) {
         prev.door += "00";
     }
-    if(door && door.door.length === 4){
+    if (door && door.door.length === 4) {
         door.door += "00";
     }
 

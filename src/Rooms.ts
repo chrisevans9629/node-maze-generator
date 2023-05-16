@@ -21,7 +21,7 @@ export function rm(name: string, door: string, finite?: boolean, count?: number)
 
     return { door: door, title: name, isFinite: finite, count: count, color: color };
 }
-
+ 
 export let rooms = [
     rm("Main Landing", "1010"),
     rm("Ballroom", "1111"),

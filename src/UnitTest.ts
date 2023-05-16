@@ -1,8 +1,9 @@
-import { DoorCount, GetDirection, IsBlocked, IsValidDoor } from "./Helpers";
+import { DirectionName, DoorCount, GetDirection, IsBlocked, IsValidDoor } from "./Helpers";
 import { IDirection } from "./Interfaces/IDirection";
 import { IRoom } from "./Interfaces/IRoom";
 import { MazeGenerator } from "./MazeGenerator";
 import { rm } from "./Rooms";
+import { MockSelector } from "./Selector";
 
 function Test<T>(expected: T, actual: T, becauseOf?: string) {
     if (expected !== actual) {
@@ -10,18 +11,18 @@ function Test<T>(expected: T, actual: T, becauseOf?: string) {
     }
 }
 let zero = { x: 0, y: 0, z: 0 };
-
+let selector = new MockSelector();
 export function RunTests() {
     //Unit Tests
     console.log("Unit Tests")
 
 
-    Test("right", GetDirection(zero, { x: 1, y: 0, z: 0 }).name)
-    Test("left", GetDirection(zero, { x: -1, y: 0, z: 0 }).name)
-    Test("foreward", GetDirection(zero, { x: 0, y: -1, z: 0 }).name)
-    Test("backward", GetDirection(zero, { x: 0, y: 1, z: 0 }).name)
-    Test("up", GetDirection(zero, { x: 0, y: 0, z: 1 }).name)
-    Test("down", GetDirection(zero, { x: 0, y: 0, z: -1 }).name);
+    Test(DirectionName.Right, GetDirection(zero, { x: 1, y: 0, z: 0 }).name)
+    Test(DirectionName.Left, GetDirection(zero, { x: -1, y: 0, z: 0 }).name)
+    Test(DirectionName.Foreward, GetDirection(zero, { x: 0, y: -1, z: 0 }).name)
+    Test(DirectionName.Backward, GetDirection(zero, { x: 0, y: 1, z: 0 }).name)
+    Test(DirectionName.Up, GetDirection(zero, { x: 0, y: 0, z: 1 }).name)
+    Test(DirectionName.Down, GetDirection(zero, { x: 0, y: 0, z: -1 }).name);
     Test(null, GetDirection(zero, zero));
     Test(null, GetDirection(zero, { x: 1, y: 1, z: 0 }))
     Test(null, GetDirection(null, zero))
@@ -58,10 +59,11 @@ export function RunTests() {
 
     MazeUpDownTest();
     MazeUpDownTest1();
+    console.log("Tests done");
 }
 
 function MazeZRotationTest() {
-    let maze = new MazeGenerator(1, [rm("stairwell", "111110", false), rm("upper landing", "111101", false)]);
+    let maze = new MazeGenerator(selector, [rm("stairwell", "111110", false), rm("upper landing", "111101", false)]);
 
     Test("1111", maze.CreateRoom(zero, zero).door);
     Test("111110", maze.CreateRoom({x: 1, y:0, z:0}, zero).door);
@@ -70,7 +72,7 @@ function MazeZRotationTest() {
 
 
 function MazeZTest() {
-    let maze = new MazeGenerator(1, [rm("stairwell", "011011", false)]);
+    let maze = new MazeGenerator(selector, [rm("stairwell", "011011", false)]);
 
     Test("1010", maze.rotate(2, "1010")[0]);
     Test("1010", maze.rotate(2, "0101")[0]);
@@ -94,10 +96,10 @@ function MazeZTest() {
 }
 
 
-function rt(x,y,z,door): { x: number; y: number; z: number; door: string; title: string; color: string; count: number; isFinite: boolean; } {
-    return {x: x, y: y, z: z, door: door, title: "", color: "", count: 1, isFinite: true};
+function rt(x: number,y: number,z: number,door: string): { x: number; y: number; z: number; door: string; title: string; color: string; count: number; isFinite: boolean; } {
+    return {x: x, y: y, z: z, door: door, title: "", color: "", count: 1, isFinite: true };
 }
-function pos(x,y,z): IDirection {
+function pos(x:  number,y: number,z: number): IDirection {
     return {x:x,y:y,z:z};
 }
 
@@ -112,7 +114,7 @@ function Try<T,E>(expected: E,func: () => T, becauseOf?: string){
 }
 
 function MazeUpDownTest() {
-    let maze = new MazeGenerator(1, []);
+    let maze = new MazeGenerator(selector, []);
 
     let main = rt(1,0,1, "1111");
     let landing = rt(1,0,0, "111110");
@@ -125,7 +127,7 @@ function MazeUpDownTest() {
 }
 
 function MazeUpDownTest1() {
-    let maze = new MazeGenerator(1, []);
+    let maze = new MazeGenerator(selector, []);
 
     let main = rt(1,0,1, "1111");
     let landing = rt(1,0,0, "111110");

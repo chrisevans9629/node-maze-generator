@@ -77,7 +77,7 @@ export class MazeController {
                 ch = { x: cx, y: cy, door: "1111", title: "default", color: "white", z: cPos.z };
             }
 
-            let btn = document.getElementById(d.name) as HTMLButtonElement;
+            let btn = document.getElementById(d.name.toString().toLowerCase()) as HTMLButtonElement;
 
             let isBlocked = IsBlocked(cd, ch);
 

@@ -2,16 +2,19 @@
   "name": "maze",
   "version": "1.0.0",
   "description": "",
-  "private":true,
+  "private": true,
   "scripts": {
     "build": "start dist\\index.html && webpack"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/uuid": "^9.0.1",
     "ts-loader": "^9.4.2",
     "typescript": "^5.0.4",
     "webpack": "^5.82.0",
     "webpack-cli": "^5.1.0"
+  },
+  "dependencies": {
   }
 }

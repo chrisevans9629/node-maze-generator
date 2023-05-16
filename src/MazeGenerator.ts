@@ -1,15 +1,15 @@
-import { DoorCount, IsBlocked, IsValidDoor, mulberry32 } from "./Helpers";
+import { DirectionName, DoorCount, GetDirection, IDirectionTransform, IsBlocked, IsValidDoor, mulberry32 } from "./Helpers";
 import { IDirection } from "./Interfaces/IDirection";
 import { IRoom, IRoomTemplate } from "./Interfaces/IRoom";
-
+import { ISelector } from "./Selector";
 
 export class MazeGenerator {
-    private seed: number;
+    private selector: ISelector;
     private matrix: string[][];
     explored: IRoom[];
     rooms: IRoomTemplate[];
-    constructor(seed: number, rooms: IRoomTemplate[]) {
-        this.seed = seed;
+    constructor(selector: ISelector, rooms: IRoomTemplate[]) {
+        this.selector = selector;
         this.matrix = [
             ["1111"], //all doors
             ["0111", "1011", "1101", "1110"], //three way
@@ -22,8 +22,8 @@ export class MazeGenerator {
         this.rooms = rooms;
     }
 
-    RemoveRoom(name: string){
-        let room = this.rooms.filter(r => r.title === name)[0];
+    RemoveRoom(id: string){
+        let room = this.rooms.filter(r => r.title === id)[0];
 
         if(room && room.isFinite){
             room.count--;
@@ -36,22 +36,20 @@ export class MazeGenerator {
         }
     }
 
-    CreateRandom(dir: IDirection){
-        return mulberry32(dir.x * 7 + dir.y * 77 + dir.z * 777 + this.seed);
-    }
-
-    GetRandom<Type>(rng:()=>number,data:Type[]): Type {
-        let ii = Math.floor(rng() * data.length);
-        return data[ii];
-    }
-
-    GetRoom(dir: IDirection): IRoomTemplate {
+    GetRoom(dir: IDirection, action: IDirectionTransform): IRoomTemplate {
         if (dir.x == 0 && dir.y == 0 && dir.z == 0) {
             return { door: "1111", title: "Entrance Hall", isFinite:true, count:1, color: "white" };
         }
-        let rng = this.CreateRandom(dir);
+        this.selector.Create(dir);
 
-        let room = this.GetRandom(rng, this.rooms);
+        let rooms = this.rooms;
+        if(action.name === DirectionName.Up) {
+            rooms = this.rooms.filter(r => r.door[5] === "1");
+        } else if(action.name === DirectionName.Down) {
+            rooms = this.rooms.filter(r => r.door[4] === "1");
+        }
+
+        let room = this.selector.GetItem(rooms);
         if(!room)
         {
             return null;
@@ -60,7 +58,8 @@ export class MazeGenerator {
 
         this.matrix.forEach(m => {
             if(m.includes(door)){
-                door = m[Math.floor(rng()*m.length)];
+                //door = m[Math.floor(rng()*m.length)];
+                door = this.selector.GetItem(m);
             }
         });   
         return { door: door, title: room.title, isFinite: room.isFinite, count: room.count, color: room.color };
@@ -110,8 +109,9 @@ export class MazeGenerator {
             }
             return lastCalc;
         }
+        let trans = GetDirection(prevDir, newDir);
 
-        let room = this.GetRoom(newDir);
+        let room = this.GetRoom(newDir, trans);
         if(!room){
             throw "no more rooms!";
         }
@@ -122,8 +122,8 @@ export class MazeGenerator {
             let blocked = this.CheckBlocked(pRoom, newDir, door);
 
             if (blocked !== null && blocked >= 0) {
-                let rng = this.CreateRandom(newDir);
-                door = this.GetRandom(rng, this.rotate(blocked, door));
+                this.selector.Create(newDir);
+                door = this.selector.GetItem(this.rotate(blocked, door));
             }
         }
 
