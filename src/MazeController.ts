@@ -74,7 +74,7 @@ export class MazeController {
             let ch = this.maze.GetExplored(cPos);
 
             if (!ch) {
-                ch = { x: cx, y: cy, door: "1111", title: "default", color: "white", z: cPos.z };
+                ch = { x: cx, y: cy, door: "111111", title: "default", color: "white", z: cPos.z };
             }
 
             let btn = document.getElementById(d.name.toString().toLowerCase()) as HTMLButtonElement;
