@@ -46,6 +46,9 @@ export function RunTests() {
     Test(5, IsBlocked({x:0, y:0, z:0, door: "111110"}, {x:0, y:0, z:1, door: "1111"}), "traveling from stairs to main would require a rotation");
     Test(-1, IsBlocked({x:0, y:0, z:0, door: "1111"}, {x:0, y:0, z:1, door: "111111"}), "main to stairs should fail");
 
+
+    
+
     Test(1, DoorCount("1000"));
     Test(2, DoorCount("1010"));
 
