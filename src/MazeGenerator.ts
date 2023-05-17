@@ -37,12 +37,10 @@ export class MazeGenerator {
     }
 
     GetRoom(dir: IDirection, action: IDirectionTransform): IRoomTemplate {
-        if (dir.x == 0 && dir.y == 0 && dir.z == 0) {
-            return { door: "1111", title: "Entrance Hall", isFinite:true, count:1, color: "white" };
-        }
+
         this.selector.Create(dir);
 
-        let rooms = this.rooms;
+        let rooms = this.rooms.filter(r => r.levels[dir.z] === "1");
         if(action.name === DirectionName.Up) {
             rooms = this.rooms.filter(r => r.door[5] === "1");
         } else if(action.name === DirectionName.Down) {
@@ -62,7 +60,7 @@ export class MazeGenerator {
                 door = this.selector.GetItem(m);
             }
         });   
-        return { door: door, title: room.title, isFinite: room.isFinite, count: room.count, color: room.color };
+        return { door: door, title: room.title, isFinite: room.isFinite, count: room.count, color: room.color, levels: room.levels };
     }
 
     GetExplored(prevDir: IDirection) {
@@ -72,7 +70,7 @@ export class MazeGenerator {
         }
         return null;
     }
-    rotate(doorIndex: number, door1: string): string[] {
+    Rotate(doorIndex: number, door1: string): string[] {
 
         let upDown = "";
         if(door1.length > 4){
@@ -95,7 +93,17 @@ export class MazeGenerator {
         //add the up/down doors back.
         return matchingDoors.map(m => m + upDown);
     }
+
+    Start(rooms:IRoom[]){
+        rooms.forEach(r => {
+            this.explored.push(r);
+        })
+    }
+
     CreateRoom(newDir: IDirection, prevDir: IDirection): IRoom {
+        if(newDir.x === prevDir.x && newDir.y === prevDir.y && newDir.z === prevDir.z){
+            throw "new direction cannot match previous";
+        }
 
         let lastCalc = this.GetExplored(newDir);
         let pRoom = this.GetExplored(prevDir);
@@ -123,11 +131,11 @@ export class MazeGenerator {
 
             if (blocked !== null && blocked >= 0) {
                 this.selector.Create(newDir);
-                door = this.selector.GetItem(this.rotate(blocked, door));
+                door = this.selector.GetItem(this.Rotate(blocked, door));
             }
         }
 
-        let roomFinal = { x: newDir.x, y: newDir.y, z: newDir.z, door: door, title: room.title, color: room.color };
+        let roomFinal: IRoom = { x: newDir.x, y: newDir.y, z: newDir.z, door: door, title: room.title, color: room.color, levels: room.levels };
         this.explored.push(roomFinal);
         this.RemoveRoom(room.title);
         return roomFinal;

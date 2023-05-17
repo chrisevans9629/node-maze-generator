@@ -66,26 +66,29 @@ export function RunTests() {
 }
 
 function MazeZRotationTest() {
-    let maze = new MazeGenerator(selector, [rm("stairwell", "111110", false), rm("upper landing", "111101", false)]);
+    let maze = new MazeGenerator(selector, [rm("stairwell", "111110", "1111", false), rm("upper landing", "111101", "1111", false)]);
 
-    Test("1111", maze.CreateRoom(zero, zero).door);
+    maze.Start([{x:0,y:0,z:0,door:"1111",title:"test", color:"", levels:"1111"}]);
+
+    Test("1111", maze.explored[0].door);
     Test("111110", maze.CreateRoom({x: 1, y:0, z:0}, zero).door);
     Test("111101", maze.CreateRoom({x:1, y:0, z:1}, {x:1, y:0, z:0}).door);
 }
 
 
 function MazeZTest() {
-    let maze = new MazeGenerator(selector, [rm("stairwell", "011011", false)]);
+    let maze = new MazeGenerator(selector, [rm("stairwell", "011011", "1111", false)]);
 
-    Test("1010", maze.rotate(2, "1010")[0]);
-    Test("1010", maze.rotate(2, "0101")[0]);
-    Test("0101", maze.rotate(1, "0101")[0]);
-    Test("0101", maze.rotate(1, "1010")[0]);
+    Test("1010", maze.Rotate(2, "1010")[0]);
+    Test("1010", maze.Rotate(2, "0101")[0]);
+    Test("0101", maze.Rotate(1, "0101")[0]);
+    Test("0101", maze.Rotate(1, "1010")[0]);
 
-    Test("0011", maze.rotate(2, "1100")[0]);
-    Test("001111", maze.rotate(2, "110011")[0]);
+    Test("0011", maze.Rotate(2, "1100")[0]);
+    Test("001111", maze.Rotate(2, "110011")[0]);
 
-    Test("1111", maze.CreateRoom(zero, zero).door);
+    
+    maze.Start([{x:0,y:0,z:0,door:"1111",title:"test", color:"", levels:"1111"}]);
 
     let pos = { x: 0, y: 1, z: 0 };
     Test("011011", maze.CreateRoom(pos, zero).door);
@@ -99,8 +102,8 @@ function MazeZTest() {
 }
 
 
-function rt(x: number,y: number,z: number,door: string): { x: number; y: number; z: number; door: string; title: string; color: string; count: number; isFinite: boolean; } {
-    return {x: x, y: y, z: z, door: door, title: "", color: "", count: 1, isFinite: true };
+function rt(x: number,y: number,z: number,door: string): { x: number; y: number; z: number; door: string; title: string; color: string; count: number; isFinite: boolean; levels: string} {
+    return {x: x, y: y, z: z, door: door, title: "", color: "", count: 1, isFinite: true, levels: "1111" };
 }
 function pos(x:  number,y: number,z: number): IDirection {
     return {x:x,y:y,z:z};

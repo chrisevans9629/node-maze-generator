@@ -2,9 +2,10 @@
   "name": "maze",
   "version": "1.0.0",
   "description": "",
+  "type": "commonjs",
   "private": true,
   "scripts": {
-    "build": "start dist\\index.html && webpack"
+    "build": "webpack"
   },
   "author": "",
   "license": "ISC",

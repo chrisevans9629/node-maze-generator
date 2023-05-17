@@ -6,10 +6,12 @@ export interface IRoomTemplate {
     count: number;
     isFinite: boolean;
     color: string;
+    levels: string;
 }
 
 export interface IRoom extends IDirection {
     door: string;
     title: string;
     color: string;
+    levels: string;
 }

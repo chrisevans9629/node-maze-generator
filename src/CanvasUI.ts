@@ -19,7 +19,7 @@ export class MazeCanvasRenderer {
             this.canvas = element;
         }
         else {
-            this.canvas = new HTMLCanvasElement();
+            this.canvas = document.createElement("canvas") as HTMLCanvasElement;
             element.appendChild(this.canvas);
         }
 

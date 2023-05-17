@@ -20,6 +20,7 @@ module.exports = {
   output: {
     filename: "bundle.js",
     path: path.resolve(__dirname, "dist"),
+    library: "MazeGen"
   },
   watch: true,
 };
