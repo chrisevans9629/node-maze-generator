@@ -33,6 +33,12 @@ export class MazeController {
         this.actions = [leftBtn, rightBtn, forewardBtn, backBtn, upBtn, downBtn];
 
         let header = document.getElementById("header");
+
+        let pd = this.maze.GetExplored(this.position);
+        if(header){
+            header.textContent = `Floor ${pd.z} ${pd.title}`;
+        }
+
         document.addEventListener("keydown", function (event) {
             let delta = { x: control.position.x, y: control.position.y, z: control.position.z };
             //console.log(event.keyCode);
