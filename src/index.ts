@@ -9,13 +9,13 @@ import { RandomSelector } from "./Selector";
 import { gameRooms, special } from "./Rooms";
 
 //RunTests();
-export function CreateBasicMaze(){
+export function CreateBasicMaze(id: string){
     let s = Math.floor( Math.random() * 1000 ) + 1;
     let selector = new RandomSelector(s);
     
     let maze = new MazeGenerator(selector, gameRooms);
     
-    let ui = new MazeCanvasRenderer("canvas", 400, 400);
+    let ui = new MazeCanvasRenderer(id, 400, 400);
     
     let controller = new MazeController(maze, ui);
     
