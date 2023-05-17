@@ -9,6 +9,7 @@ export class MazeController {
     position: IDirection;
     maze: MazeGenerator;
     ui: MazeCanvasRenderer;
+    actions: {disabled:boolean, id: string}[];
     constructor(maze: MazeGenerator, ui: MazeCanvasRenderer) {
         this.maze = maze;
         this.ui = ui;
@@ -22,13 +23,14 @@ export class MazeController {
 
         let control = this;
 
-        let leftBtn = document.getElementById("left") as HTMLButtonElement;
-        let rightBtn = document.getElementById("right") as HTMLButtonElement;
-        let forewardBtn = document.getElementById("foreward") as HTMLButtonElement;
-        let backBtn = document.getElementById("backward") as HTMLButtonElement;
-        let upBtn = document.getElementById("up") as HTMLButtonElement;
-        let downBtn = document.getElementById("down") as HTMLButtonElement;
+        let leftBtn =       { disabled: false, id:"left" };//document.getElementById("left") as HTMLButtonElement;
+        let rightBtn =      { disabled: false, id:"right" };//document.getElementById("right") as HTMLButtonElement;
+        let forewardBtn =   { disabled: false, id:"foreward" };//document.getElementById("foreward") as HTMLButtonElement;
+        let backBtn =       { disabled: false, id:"backward" };//document.getElementById("backward") as HTMLButtonElement;
+        let upBtn =         { disabled: false, id:"up" };//document.getElementById("up") as HTMLButtonElement;
+        let downBtn =       { disabled: false, id:"down" };//document.getElementById("down") as HTMLButtonElement;
 
+        this.actions = [leftBtn, rightBtn, forewardBtn, backBtn, upBtn, downBtn];
 
         let header = document.getElementById("header");
         document.addEventListener("keydown", function (event) {
@@ -58,7 +60,9 @@ export class MazeController {
             control.position.y = delta.y;
             control.position.z = delta.z;
             control.ui.Draw(control.maze, control.position);
-            header.textContent = `Floor ${pd.z} ${pd.title}`;
+            if(header){
+                header.textContent = `Floor ${pd.z} ${pd.title}`;
+            }
         });
 
     }
@@ -80,10 +84,13 @@ export class MazeController {
             }
 
             let btn = document.getElementById(d.name.toString().toLowerCase()) as HTMLButtonElement;
-
+            let action = this.actions.filter(a => a.id == d.name)[0];
             let isBlocked = IsBlocked(cd, ch);
 
-            btn.disabled = isBlocked !== null;
+            if(btn){
+                btn.disabled = isBlocked !== null;
+            }
+            action.disabled = isBlocked !== null;
 
         });
     }
