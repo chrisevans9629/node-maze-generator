@@ -1,5 +1,5 @@
 import { MazeCanvasRenderer } from "./CanvasUI";
-import { IsBlocked, dirChecks } from "./Helpers";
+import { DirectionName, IsBlocked, dirChecks } from "./Helpers";
 import { IDirection } from "./Interfaces/IDirection";
 import { IDoor } from "./Interfaces/IDoor";
 import { IRoom } from "./Interfaces/IRoom";
@@ -10,10 +10,17 @@ export class MazeController {
     maze: MazeGenerator;
     ui: MazeCanvasRenderer;
     actions: {disabled:boolean, id: string}[];
+    updateHeader: (header:string) => void;
+    leftBtn =       { disabled: false, id:"left" };     
+    rightBtn =      { disabled: false, id:"right" };    
+    forewardBtn =   { disabled: false, id:"foreward" }; 
+    backBtn =       { disabled: false, id:"backward" }; 
+    upBtn =         { disabled: false, id:"up" };       
+    downBtn =       { disabled: false, id:"down" }; 
     constructor(maze: MazeGenerator, ui: MazeCanvasRenderer) {
         this.maze = maze;
         this.ui = ui;
-
+        this.actions = [this.leftBtn, this.rightBtn, this.forewardBtn, this.backBtn, this.upBtn, this.downBtn];
     }
 
     Start(position: IDirection, startingRooms: IRoom[]) {
@@ -21,60 +28,69 @@ export class MazeController {
         this.maze.Start(startingRooms);
         this.ui.Draw(this.maze, this.position);
 
-        let control = this;
-
-        let leftBtn =       { disabled: false, id:"left" };//document.getElementById("left") as HTMLButtonElement;
-        let rightBtn =      { disabled: false, id:"right" };//document.getElementById("right") as HTMLButtonElement;
-        let forewardBtn =   { disabled: false, id:"foreward" };//document.getElementById("foreward") as HTMLButtonElement;
-        let backBtn =       { disabled: false, id:"backward" };//document.getElementById("backward") as HTMLButtonElement;
-        let upBtn =         { disabled: false, id:"up" };//document.getElementById("up") as HTMLButtonElement;
-        let downBtn =       { disabled: false, id:"down" };//document.getElementById("down") as HTMLButtonElement;
-
-        this.actions = [leftBtn, rightBtn, forewardBtn, backBtn, upBtn, downBtn];
-
-        let header = document.getElementById("header");
+        //let header = document.getElementById("header");
 
         let pd = this.maze.GetExplored(this.position);
-        if(header){
-            header.textContent = `Floor ${pd.z} ${pd.title}`;
+        if(this.updateHeader){
+            this.updateHeader(`Floor ${pd.z} ${pd.title}`);
         }
 
-        document.addEventListener("keydown", function (event) {
-            let delta = { x: control.position.x, y: control.position.y, z: control.position.z };
-            //console.log(event.keyCode);
-            if (event.keyCode === 100 && !leftBtn.disabled) {
-                delta.x--;
-            } else if (event.keyCode === 104 && !forewardBtn.disabled) {
-                delta.y--;
-            } else if (event.keyCode === 102 && !rightBtn.disabled) {
-                delta.x++;
-            } else if (event.keyCode === 101 && !backBtn.disabled) {
-                delta.y++;
-            } else if (event.keyCode === 103 && !upBtn.disabled) {
-                delta.z++;
-            } else if (event.keyCode === 97 && !downBtn.disabled) {
-                delta.z--;
-            }
-
-            if (delta.x == control.position.x && delta.y == control.position.y && delta.z == control.position.z) {
-                return;
-            }
-
-            let pd = control.maze.CreateRoom(delta, control.position);
-            control.UpdateAvailableRoutes(delta, pd);
-            control.position.x = delta.x;
-            control.position.y = delta.y;
-            control.position.z = delta.z;
-            control.ui.Draw(control.maze, control.position);
-            if(header){
-                header.textContent = `Floor ${pd.z} ${pd.title}`;
-            }
-        });
+        // document.addEventListener("keydown", function (event) {
+            
+        // });
 
     }
 
+    Move(action: DirectionName){
+        let control = this;
+        let delta = { x: control.position.x, y: control.position.y, z: control.position.z };
+        //console.log(event.keyCode);
+        if (action === DirectionName.Left && !this.leftBtn.disabled) {
+            delta.x--;
+        } else if (action === DirectionName.Foreward && !this.forewardBtn.disabled) {
+            delta.y--;
+        } else if (action === DirectionName.Right && !this.rightBtn.disabled) {
+            delta.x++;
+        } else if (action === DirectionName.Backward && !this.backBtn.disabled) {
+            delta.y++;
+        } else if (action === DirectionName.Up && !this.upBtn.disabled) {
+            delta.z++;
+        } else if (action === DirectionName.Down && !this.downBtn.disabled) {
+            delta.z--;
+        }
+
+        // if (event.keyCode === 100 && !leftBtn.disabled) {
+        //     delta.x--;
+        // } else if (event.keyCode === 104 && !forewardBtn.disabled) {
+        //     delta.y--;
+        // } else if (event.keyCode === 102 && !rightBtn.disabled) {
+        //     delta.x++;
+        // } else if (event.keyCode === 101 && !backBtn.disabled) {
+        //     delta.y++;
+        // } else if (event.keyCode === 103 && !upBtn.disabled) {
+        //     delta.z++;
+        // } else if (event.keyCode === 97 && !downBtn.disabled) {
+        //     delta.z--;
+        // }
+
+        if (delta.x == control.position.x && delta.y == control.position.y && delta.z == control.position.z) {
+            return;
+        }
+
+        let pd = control.maze.CreateRoom(delta, control.position);
+        let result = control.UpdateAvailableRoutes(delta, pd);
+        control.position.x = delta.x;
+        control.position.y = delta.y;
+        control.position.z = delta.z;
+        control.ui.Draw(control.maze, control.position);
+        if(control.updateHeader){
+            control.updateHeader(`Floor ${pd.z} ${pd.title}`);
+        }
+        return {room: pd, routes: result};
+    }
+
     private UpdateAvailableRoutes(dir: IDirection, pd: IRoom) {
-        dirChecks.forEach(d => {
+        return dirChecks.map(d => {
             let cd = { x: dir.x, y: dir.y, door: pd.door, title: pd.title, z: dir.z };
 
             let cx = dir.x + d.delta[0];
@@ -89,15 +105,15 @@ export class MazeController {
                 ch = { x: cx, y: cy, z: cPos.z, door: "111111" };
             }
 
-            let btn = document.getElementById(d.name.toString().toLowerCase()) as HTMLButtonElement;
+            //let btn = document.getElementById(d.name.toString().toLowerCase()) as HTMLButtonElement;
             let action = this.actions.filter(a => a.id == d.name)[0];
             let isBlocked = IsBlocked(cd, ch);
 
-            if(btn){
-                btn.disabled = isBlocked !== null;
-            }
+            // if(btn){
+            //     btn.disabled = isBlocked !== null;
+            // }
             action.disabled = isBlocked !== null;
-
+            return {disabled: action.disabled, name: d.name};
         });
     }
 }
