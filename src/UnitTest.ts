@@ -1,6 +1,4 @@
 import { DirectionName, DoorCount, GetDirection, IsBlocked, IsValidDoor } from "./Helpers";
-import { IDirection } from "./Interfaces/IDirection";
-import { IRoom } from "./Interfaces/IRoom";
 import { MazeGenerator } from "./MazeGenerator";
 import { rm } from "./Rooms";
 import { MockSelector } from "./Selector";
@@ -17,12 +15,12 @@ export function RunTests() {
     console.log("Unit Tests")
 
 
-    Test(DirectionName.Right, GetDirection(zero, { x: 1, y: 0, z: 0 }).name)
-    Test(DirectionName.Left, GetDirection(zero, { x: -1, y: 0, z: 0 }).name)
-    Test(DirectionName.Foreward, GetDirection(zero, { x: 0, y: -1, z: 0 }).name)
-    Test(DirectionName.Backward, GetDirection(zero, { x: 0, y: 1, z: 0 }).name)
-    Test(DirectionName.Up, GetDirection(zero, { x: 0, y: 0, z: 1 }).name)
-    Test(DirectionName.Down, GetDirection(zero, { x: 0, y: 0, z: -1 }).name);
+    Test(DirectionName.Right, GetDirection(zero, { x: 1, y: 0, z: 0 })?.name)
+    Test(DirectionName.Left, GetDirection(zero, { x: -1, y: 0, z: 0 })?.name)
+    Test(DirectionName.Foreward, GetDirection(zero, { x: 0, y: -1, z: 0 })?.name)
+    Test(DirectionName.Backward, GetDirection(zero, { x: 0, y: 1, z: 0 })?.name)
+    Test(DirectionName.Up, GetDirection(zero, { x: 0, y: 0, z: 1 })?.name)
+    Test(DirectionName.Down, GetDirection(zero, { x: 0, y: 0, z: -1 })?.name);
     Test(null, GetDirection(zero, zero));
     Test(null, GetDirection(zero, { x: 1, y: 1, z: 0 }))
     Test(null, GetDirection(null, zero))
@@ -104,9 +102,6 @@ function MazeZTest() {
 
 function rt(x: number,y: number,z: number,door: string): { x: number; y: number; z: number; door: string; title: string; color: string; count: number; isFinite: boolean; levels: string} {
     return {x: x, y: y, z: z, door: door, title: "", color: "", count: 1, isFinite: true, levels: "1111" };
-}
-function pos(x:  number,y: number,z: number): IDirection {
-    return {x:x,y:y,z:z};
 }
 
 function Try<T,E>(expected: E,func: () => T, becauseOf?: string){

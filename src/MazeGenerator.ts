@@ -1,4 +1,4 @@
-import { DirectionName, DoorCount, GetDirection, IDirectionTransform, IsBlocked, IsValidDoor, mulberry32 } from "./Helpers";
+import { DirectionName, DoorCount, GetDirection, IDirectionTransform, IsBlocked, IsValidDoor } from "./Helpers";
 import { IDirection } from "./Interfaces/IDirection";
 import { IRoom, IRoomTemplate } from "./Interfaces/IRoom";
 import { ISelector } from "./Selector";
@@ -36,14 +36,14 @@ export class MazeGenerator {
         }
     }
 
-    GetRoom(dir: IDirection, action: IDirectionTransform): IRoomTemplate {
-
+    GetRoom(dir: IDirection, action: IDirectionTransform | null): IRoomTemplate | null {
+        
         this.selector.Create(dir);
 
         let rooms = this.rooms.filter(r => r.levels[dir.z] === "1");
-        if(action.name === DirectionName.Up) {
+        if(action && action.name === DirectionName.Up) {
             rooms = this.rooms.filter(r => r.door[5] === "1");
-        } else if(action.name === DirectionName.Down) {
+        } else if(action && action.name === DirectionName.Down) {
             rooms = this.rooms.filter(r => r.door[4] === "1");
         }
 

@@ -1,12 +1,11 @@
-import { DirectionName, IsBlocked, dirChecks } from "./Helpers";
+import { DirectionName } from "./Helpers";
 import { MazeGenerator } from "./MazeGenerator";
 import { MazeCanvasRenderer } from "./CanvasUI";
-import { RunTests } from "./UnitTest";
 import { MazeController } from "./MazeController";
-import { IRoom, IRoomTemplate } from "./Interfaces/IRoom";
+import { IRoom } from "./Interfaces/IRoom";
 //import { rooms } from "./Rooms";
 import { RandomSelector } from "./Selector";
-import { gameRooms, special } from "./Rooms";
+import { gameRooms } from "./Rooms";
 
 //RunTests();
 export function CreateBasicMaze(id: string) {
@@ -22,7 +21,9 @@ export function CreateBasicMaze(id: string) {
     let header = document.getElementById("header");
 
     controller.updateHeader = (s) => {
-        header.textContent = s;
+        if(header){
+            header.textContent = s;
+        }
     };
 
     let moves = new Map<number, DirectionName>();
@@ -35,8 +36,12 @@ export function CreateBasicMaze(id: string) {
 
     document.addEventListener("keydown", function (event) {
         if(moves.has(event.keyCode)){
-            let result = controller.Move(moves.get(event.keyCode));
-            result.routes.forEach(r => {
+            let move = moves.get(event.keyCode);
+            if(!move){
+                return;
+            }
+            let result = controller.Move(move);
+            result?.routes.forEach(r => {
                 let btn = document.getElementById(r.name.toString().toLowerCase()) as HTMLButtonElement;
                 if(btn){
                     btn.disabled = r.disabled;

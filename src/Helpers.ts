@@ -69,7 +69,7 @@ export function IsValidDoor(doorIndex: number, doorCount: number, door: string) 
 
 
 
-export function GetDirection(prev: IDirection, door: IDirection): IDirectionTransform {
+export function GetDirection(prev: IDirection | null, door: IDirection | null): IDirectionTransform | null {
     for (let i = 0; i < dirChecks.length; i++) {
         let dir = dirChecks[i];
 
@@ -86,7 +86,7 @@ export function GetDirection(prev: IDirection, door: IDirection): IDirectionTran
 //This method loops through the 4 directions and determines which direction we are checking.
 //Then, we check the doors that match that direction.
 //If the doors do not match, then it's blocked, so we need to rotate the room.
-export function IsBlocked(prev: IDoor, door: IDoor) {
+export function IsBlocked(prev: IDoor | null, door: IDoor | null) {
     if (prev && prev.door.length === 4) {
         prev.door += "00";
     }
@@ -103,7 +103,7 @@ export function IsBlocked(prev: IDoor, door: IDoor) {
     let di = dir.comp[0];
     let pdi = dir.comp[1];
 
-    if (prev.door[pdi] === undefined || prev.door[pdi] === "0") {
+    if (prev?.door[pdi] === undefined || prev.door[pdi] === "0") {
         return -1;
     }
 

@@ -18,14 +18,24 @@ export class MazeCanvasRenderer {
         if (element instanceof HTMLCanvasElement) {
             this.canvas = element;
         }
-        else {
+        else if(element) {
             this.canvas = document.createElement("canvas") as HTMLCanvasElement;
             element.appendChild(this.canvas);
+        }
+        else{
+            throw "canvas not found";
         }
 
         this.canvas.width = width;
         this.canvas.height = height;
-        this.ctx = this.canvas.getContext("2d");
+        let ctx = this.canvas.getContext("2d");
+        if(ctx)
+        {
+            this.ctx = ctx;
+        }
+        else{
+            throw "could not created 2d context";
+        }
         this.cellCenter = this.cell / 2;
         this.dotCenter = this.dots / 2;
         this.middle = this.canvas.width / 2;

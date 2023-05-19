@@ -13,6 +13,9 @@ export class RandomSelector implements ISelector
     rng: () => number;
     constructor(seed: number){
         this.seed = seed;
+        this.rng = () => {
+            throw "create was not ran";
+        };
     }
     Create(dir: IDirection): void {
         this.rng = mulberry32(dir.x * 7 + dir.y * 77 + dir.z * 777 + this.seed);
@@ -30,7 +33,7 @@ export class RandomSelector implements ISelector
 
 export class MockSelector implements ISelector {
     Index: number = 0;
-    Create(dir: IDirection): void {
+    Create(_dir: IDirection): void {
 
     }
     GetItem<Type>(data: Type[]): Type {

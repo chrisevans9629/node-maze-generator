@@ -10,7 +10,7 @@ export class MazeController {
     maze: MazeGenerator;
     ui: MazeCanvasRenderer;
     actions: {disabled:boolean, id: string}[];
-    updateHeader: (header:string) => void;
+    updateHeader: ((header: string) => void) | undefined;
     leftBtn =       { disabled: false, id:"left" };     
     rightBtn =      { disabled: false, id:"right" };    
     forewardBtn =   { disabled: false, id:"foreward" }; 
@@ -21,6 +21,7 @@ export class MazeController {
         this.maze = maze;
         this.ui = ui;
         this.actions = [this.leftBtn, this.rightBtn, this.forewardBtn, this.backBtn, this.upBtn, this.downBtn];
+        this.position = {x: 0, y:0, z:0};
     }
 
     Start(position: IDirection, startingRooms: IRoom[]) {
@@ -32,7 +33,7 @@ export class MazeController {
 
         let pd = this.maze.GetExplored(this.position);
         if(this.updateHeader){
-            this.updateHeader(`Floor ${pd.z} ${pd.title}`);
+            this.updateHeader(`Floor ${pd?.z} ${pd?.title}`);
         }
 
         // document.addEventListener("keydown", function (event) {
@@ -99,7 +100,7 @@ export class MazeController {
 
             let cPos = { x: cx, y: cy, z: cz };
 
-            let ch: IDoor = this.maze.GetExplored(cPos);
+            let ch: IDoor | null = this.maze.GetExplored(cPos);
 
             if (!ch) {
                 ch = { x: cx, y: cy, z: cPos.z, door: "111111" };
